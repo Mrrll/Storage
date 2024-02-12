@@ -13,14 +13,18 @@ class InfoController extends Controller
         $infos = Info::get();
         return view('index', compact('infos'));
     }
-    public function create()
+    public function create($storage)
     {
-        return view('create');
+        return view('create', compact('storage'));
     }
     public function store(InfoRequest $request)
     {
         $fileName = time() . '.' . $request->file->extension();
-        $request->file->storeAs('public/images', $fileName);
+
+        $route = ($request->storage == "public") ? 'public/images' : 'private/images';
+
+        $request->file->storeAs($route, $fileName);
+
         $info = new Info;
         $info->name = $request->name;
         $info->file_uri = $fileName;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\InfoController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,5 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [InfoController::class, 'index'])->name('index');
-Route::get('/create', [InfoController::class, 'create'])->name('create');
+Route::get('/create/{storage}', [InfoController::class, 'create'])->name('create');
 Route::post('/store', [InfoController::class, 'store'])->name('store');
+
+
+Route::get('storage/private/images/{file}', function ($file) {
+    $path = storage_path('app/private/images/'. $file);
+    return response()->file($path);
+})->name('private.images');

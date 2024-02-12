@@ -14,6 +14,7 @@ Manejo del almacenamiento en laravel
 - [Almacenar los archivos en la carpeta publica](#item7)
 - [Almacenar los archivos en la carpeta storage](#item8)
 - [Almacenar los archivos en la carpeta storage/public](#item9)
+- [Almacenar en storage y visualización](#item10)
 
 <a name="item1"></a>
 
@@ -273,6 +274,90 @@ php artisan storage:link
 [Subir](#top)
 
 **`Agradecimientos:` Por el Tutorial [GOGODEV](https://www.youtube.com/watch?v=oNf33-nqleI) #13 Curso de LARAVEL profesional - FILE STORAGE.**
+
+<a name="item10"></a>
+
+## Almacenar en storage y visualización.
+
+> Abrimos la vista index y cambiamos.
+
+```html
+
+    <a href="{{ route('create', 'public') }}">Create Public</a>
+    <h4>Lista de imagenes publicas</h4>
+    <ul>
+        @forelse ($infos as $info)
+            <li><img src="{{ asset('storage/images/' . $info->file_uri) }}" alt="{{ $info->name }}" width="128px"></li>
+        @empty
+            <li>No data.</li>
+        @endforelse
+    </ul>
+    <a href="{{ route('create', 'private') }}">Create Private</a>
+    <h4>Lista de imagenes privadas</h4>
+    <ul>
+        @forelse ($infos as $info)
+            <li><img src="{{ route('private.images', ['file' => $info->file_uri]) }}" alt="{{ $info->name }}"
+                    width="128px"></li>
+        @empty
+            <li>No data.</li>
+        @endforelse
+    </ul>
+
+```
+
+> Abrimos la vista create y añadimos.
+
+```html
+
+<input type="text" name="storage" value="{{ $storage }}" readonly>
+
+```
+> Abrimos request y añadimos.
+
+```php
+
+'storage' => 'required|string'
+
+```
+
+> Abrimos el controlador en create y cambiamos.
+
+```php
+
+return view('create', compact('storage'));
+
+```
+
+> Abrimos el controlador en store y cambiamos.
+
+```php
+
+$route = ($request->storage == "public") ? 'public/images' : 'private/images';
+$request->file->storeAs($route, $fileName);
+
+```
+
+**`NOTA::` He añadido una carpeta llamada private para diferenciarla con la carpeta public en la llamada.**
+
+> Abrimos el archivo de rutas web y añadimos.
+
+```php
+
+Route::get('storage/private/images/{file}', function ($file) {
+    $path = storage_path('app/private/images/'. $file);
+    return response()->file($path);
+})->name('private.images');
+
+```
+> De esta manera podemos restringir el acceso.
+
+```php
+
+return (Auth::check()) ?  response()->file($path) : abort(404);
+
+```
+
+**`NOTA::` Para la visualización de los archivos en la carpeta storage hay que hacer que la ruta coincida con la llamada.**
 
 >Pues eso es todo espero que sirva. 👍
 

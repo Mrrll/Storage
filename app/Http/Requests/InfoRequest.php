@@ -24,7 +24,8 @@ class InfoRequest extends FormRequest
     {
         return [
             'name' => ['nullable', 'max:100'],
-            'file' => ['nullable', File::image()->max(10 * 1024)]
+            'file' => ['nullable', File::image()->max(10 * 1024)],
+            'storage' => 'required|string'
         ];
     }
 }
