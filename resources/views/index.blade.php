@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <a href="{{ route('create') }}">Create</a>
+    <ul>
+        @forelse ($infos as $info)
+            <li><img src="{{ asset('storage/images/' . $info->file_uri) }}" alt="{{ $info->name }}" width="128px"></li>
+        @empty
+            <li>No data.</li>
+        @endforelse
+    </ul>
+</body>
+
+</html>
